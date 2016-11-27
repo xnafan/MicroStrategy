@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "MicroStrategy", "D:\Dropbox\Programming\Web\MicroStrategy\", "{48EA650B-8C0F-4B90-A584-50C910C018DD}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_53885"
+		Debug.AspNetCompiler.PhysicalPath = "D:\Dropbox\Programming\Web\MicroStrategy\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_53885\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_53885"
+		Release.AspNetCompiler.PhysicalPath = "D:\Dropbox\Programming\Web\MicroStrategy\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_53885\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "53885"
+		SlnRelativePath = "D:\Dropbox\Programming\Web\MicroStrategy\"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48EA650B-8C0F-4B90-A584-50C910C018DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48EA650B-8C0F-4B90-A584-50C910C018DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

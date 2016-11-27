@@ -1,0 +1,44 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>MicroStrategy</title>
+    <meta name="robots" content="index, follow">
+    <meta name="Description" CONTENT="Author: Carsten Goldbæk Nielsen and Jakob Farian Krarup">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="cache-control" content="no-cache">
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <style>
+        .explanation a {
+            color:silver#2B9EE8;margin-top:10px;font-size:14px;
+            text-decoration:none;
+            }
+            a:hover {color:#FFF500;}
+    </style>
+</head>
+<body>
+   
+    <script src="js/maphelper.js"></script>
+    <script src="js/phaser.js"></script>
+    <script src="js/Player.js"></script>
+    <script src="js/BootState.js"></script>
+    <script src="js/PreloadState.js"></script>
+    <script src="js/GameState.js"></script>
+    <script>
+        game = new Phaser.Game(1024, 1024, Phaser.CANVAS, 'gameDiv');
+        game.state.add('BootState', BootState);
+        game.state.add('PreloadState', PreloadState);
+         game.state.add('GameState', GameState);
+        game.state.start('BootState');
+    </script>
+    <div id="outer" style="border:1px solid gray; margin: 0 auto; width:1100px;">
+        <div id="placeholder">
+            <div id="gameDiv"></div>
+         </div>
+         <div style="text-align:center;font-family:verdana, arial,sans-serif;color:silver;margin:5px;font-size:14px;" class="explanation">
+            A little game for two strategists
+              </div>      
+    </div>
+</body>
+</html>
