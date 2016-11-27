@@ -1,0 +1,24 @@
+﻿The TODO list for MicroStrategy
+-------------------------------
+
+
+SETUP
+-----
+MustHaves:
+- Ensure that both beginning cities have equal amounts of wood/grain producing tiles
+- Ensure that the entire map is somewhat balanced
+
+NiceToHaves:
+
+
+GAMEPLAY
+--------
+MustHaves:
+- ability to change production type of city: attack/defense/movement of new units (maybe through a new GameState "CityMenu"?)
+- ability to create new units when enough grain in a city
+	- Have a little icon hover on the city if it has enough grain. 
+		When the city is clicked it is possible to place the new unit in a neighboring tile using the mouse.
+- ability to convert a unit to a building if enough wood has been saved up
+
+NiceToHaves:
+

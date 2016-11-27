@@ -23,7 +23,7 @@ MapHelper.prototype.createEmptyMap = function (cols, rows) {
     for (var x = 0; x < cols; x++) {
         newMap[x] = [rows];
         for (var y = 0; y < rows; y++) {
-            newMap[x][y] = 0;
+            newMap[x][y] = TileTypes.Grass;
         }
     }
     return newMap;
@@ -32,7 +32,7 @@ MapHelper.prototype.createEmptyMap = function (cols, rows) {
 MapHelper.prototype.randomizeMap = function () {
     for (var x = 0; x < MapHelper.prototype.cols; x++) {
         for (var y = 0; y < MapHelper.prototype.rows; y++) {
-            MapHelper.prototype.map[x][y] = (Math.floor(Math.random() * 5) == 0 ? 1 : 0);
+            MapHelper.prototype.map[x][y] = (Math.floor(Math.random() * 5) == 0 ? TileTypes.Forest : TileTypes.Grass);
         }
     }
 }

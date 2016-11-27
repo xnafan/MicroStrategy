@@ -1,6 +1,4 @@
-﻿var UnitTypes = { UNIT: "UNIT", BUILDING: "BUILDING" };
-
-var Player = function (name) {
+﻿var Player = function (name) {
     this.name = name;
     this.cities = [];
     this.units = [];
@@ -13,7 +11,7 @@ var Player = function (name) {
             return this.selectedItem;
         }
     };
-
+    
     this.trySelect = function (col, row) {
         var allItems = this.getAllPlayersItems();
         for (var i = 0; i < allItems.length; i++) {
@@ -22,6 +20,7 @@ var Player = function (name) {
             }
         }
     };
+
     this.selectNextItem = function () {
         if (this.selectedItem == undefined) { this.selectedItem = this.cities[0]; }
         var items = this.getAllPlayersItems();
@@ -32,24 +31,22 @@ var Player = function (name) {
                 this.selectedItem = items[index];
                 break;
             }
-        };
+        }
     };
 
-    this.getAllPlayersItems = function()
-    {
+    this.getAllPlayersItems = function () {
         return this.units.concat(this.cities);
     };
 
     this.addCity = function (col, row) {
-        var city= addSpriteToMap(col, row, 'castleImage');
+        var city = addSpriteToMap(col, row, 'castleImage');
         game.map.getTile(col, row).index = 0;
         city.woodPerTurn = game.mapHelper.get8Neighbors(game.map, city.col, city.row, 1).length;
         city.grainPerTurn = 8 - city.woodPerTurn;
         city.grain = 0;
         city.player = this;
-        city.type = UnitTypes.BUILDING;
-        city.newTurn = function ()
-        {
+        city.type = ItemTypes.BUILDING;
+        city.newTurn = function () {
             city.player.wood += city.woodPerTurn;
             city.grain += city.grainPerTurn;
         }
@@ -57,18 +54,18 @@ var Player = function (name) {
         return city;
     };
 
+
     this.addUnit = function (col, row, attack, defense, movement) {
         var unit = addSpriteToMap(col, row, 'soldierImage');
-        unit.type = UnitTypes.UNIT;
+        unit.type = ItemTypes.UNIT;
         unit.attack = attack;
         unit.defense = defense;
         unit.movesPerTurn = movement;
         unit.movesLeft = unit.movesPerTurn;
-        unit.newTurn = function ()
-        {
+        unit.newTurn = function () {
             this.movesLeft = this.movesPerTurn;
         }
-        
+
         this.units.push(unit);
 
         return unit;
@@ -84,10 +81,16 @@ var Player = function (name) {
     };
 }
 
-function addSpriteToMap(col, row, imageResourceName)
-{ 
-    var sprite = game.add.sprite(col * TileSize, row * TileSize, imageResourceName );
+function addSpriteToMap(col, row, imageResourceName) {
+    var sprite = game.add.sprite(col * TileSize, row * TileSize, imageResourceName);
     sprite.col = col;
     sprite.row = row;
     return sprite;
 }
+
+//WHY can't this be added inside the definition of Player?
+function removeUnitFromPlayer (player, unitToRemove) {
+    player.selectNextItem();
+    var indexOfItem = player.units.indexOf(unitToRemove);
+    player.units.splice(indexOfItem, 1);
+};
