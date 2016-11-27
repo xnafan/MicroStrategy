@@ -19,7 +19,6 @@ var GameState = {
         game.debugText = game.add.text(0, 0, "Currentplayer: ");
         game.world.setBounds(0, 0, MapColumns * TileSize, MapRows * TileSize);
 
-
         game.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(function () { game.toggleCurrentPlayer(); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.N).onDown.add(function () { game.getCurrentPlayer().selectNextItem(); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(function () { game.tryMove(0, -1); }, this);
@@ -48,7 +47,7 @@ var GameState = {
 	{
 	    var currentPlayer = game.getCurrentPlayer();
 	    var item = currentPlayer.getSelectedItem();
-	    game.debugText.text = "Current player: " + currentPlayer.name + "  wood " + game.getCurrentPlayer().cities[0].wood;
+	    game.debugText.text = "Current player: " + currentPlayer.name + "  wood " + game.getCurrentPlayer().wood;
 	    game.debugText.text += "\n selectedItem: (x:" + item.col + ",y:" + item.row + ")";
 	    switch (item.type)
 	    {
@@ -57,7 +56,7 @@ var GameState = {
 	            break;
 
 	        case UnitTypes.BUILDING:
-	            game.debugText.text += ", grain: " + item.grain + ", wood: " + item.wood;
+	            game.debugText.text += ", grain: " + item.grain;
 	            break;
 	    }
 	    
@@ -77,8 +76,8 @@ var GameState = {
              player1.addCity(1, 1);
              player2.addCity(14, 14);
 
-             player1.addUnit(2, 2, 1, 1, 3);
-             player2.addUnit(13, 13, 1, 1, 3);
+             player1.addUnit(2, 2, 1, 1, 2);
+             player2.addUnit(13, 13, 1, 1, 2);
 
              game.players.push(player1);
              game.players.push(player2);   
