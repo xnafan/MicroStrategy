@@ -12,12 +12,10 @@ var GameState = {
         game.restartGame = function () { game.state.start('GameState', true, false); };
         game.stage.backgroundColor = '#2d2d2d';
         game.cursors = game.input.keyboard.createCursorKeys();
-        game.map = game.add.tilemap('theMap', 64, 64, 16, 16);
-        game.map.addTilesetImage('gameTiles');
-        game.map.backgroundLayer = game.map.createLayer(0);
-        game.map.backgroundLayer.dirty = true;
-        game.debugText = game.add.text(0, 0, "Currentplayer: ");
-        game.world.setBounds(0, 0, MapColumns * TileSize, MapRows * TileSize);
+        game.debugText = game.add.text(10, 0, "Currentplayers");
+        game.debugText.fill = '#ffffaa';
+        game.debugText.fontSize = 24;
+        game.debugText.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
 
         game.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(function () { game.toggleCurrentPlayer(); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.N).onDown.add(function () { game.getCurrentPlayer().selectNextItem(); }, this);
@@ -46,16 +44,16 @@ var GameState = {
 	{
 	    var currentPlayer = game.getCurrentPlayer();
 	    var item = currentPlayer.getSelectedItem();
-	    game.debugText.text = "Current player: " + currentPlayer.name + "  wood " + game.getCurrentPlayer().wood;
-	    game.debugText.text += "\n selectedItem: (x:" + item.col + ",y:" + item.row + ")";
+	    game.debugText.text = "Player: '" + currentPlayer.name + "' has " + game.getCurrentPlayer().wood + " wood ";
+	    game.debugText.text += "\nSelectedItem is a " + item.type + " at (x:" + item.col + ",y:" + item.row + ") ";
 	    switch (item.type)
 	    {
 	        case UnitTypes.UNIT :
-	            game.debugText.text += "moves left: " + item.movesLeft;
+	            game.debugText.text += "It has " + item.movesLeft + " moves left";
 	            break;
 
 	        case UnitTypes.BUILDING:
-	            game.debugText.text += ", grain: " + item.grain;
+	            game.debugText.text += "the building contains " + item.grain + " units of grain";
 	            break;
 	    }
 	    
@@ -63,9 +61,31 @@ var GameState = {
 	    game.selectorMarker.y = currentPlayer.getSelectedItem().y;
 	},
     
-     preload: function () {
+	preload: function () {
+	    game.input.onDown.add(function (pointer, event) {
+	        var clickedTile = game.map.getTileWorldXY(pointer.x, pointer.y);
+	        game.trySelect(clickedTile.x, clickedTile.y);
+	    }, this);
          game.mapHelper = new MapHelper(MapColumns, MapRows);
          game.load.tilemap('theMap', null, game.mapHelper.mapDataToCSV(), Phaser.Tilemap.CSV);
+         game.map = game.add.tilemap('theMap', 64, 64, 16, 16);
+         game.map.addTilesetImage('gameTiles');
+         game.map.backgroundLayer = game.map.createLayer(0);
+
+        //preparing for fog-of-war... Can't figure out multiple layers in map... ? :-/
+         //game.map.playingPieceLayer = game.add.group();
+         //game.map.fogOfWarLayer = game.map.createLayer(1);
+         //for (var x = 0; x < 16; x++) {
+         //    for (var y = 0; y < 16; y++) {
+         //        game.map.fogOfWarLayer.getTile(x, y).index = 2;
+         //    }
+         //}
+         game.trySelect = function (col, row)
+         {
+             //alert("col:" + col + ",row:" + row);
+             game.getCurrentPlayer().trySelect(col, row);
+         }
+
          game.createPlayers = function (numberOfPlayers)
          {
              game.players = [];

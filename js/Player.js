@@ -14,12 +14,17 @@ var Player = function (name) {
         }
     };
 
+    this.trySelect = function (col, row) {
+        var allItems = this.getAllPlayersItems();
+        for (var i = 0; i < allItems.length; i++) {
+            if (allItems[i].col == col && allItems[i].row == row) {
+                this.selectedItem = allItems[i];
+            }
+        }
+    };
     this.selectNextItem = function () {
         if (this.selectedItem == undefined) { this.selectedItem = this.cities[0]; }
-        var items = [];
-
-        items = this.units.concat(this.cities);
-
+        var items = this.getAllPlayersItems();
         for (var i = 0; i < items.length; i++) {
             if (items[i] == this.selectedItem) {
                 var index = i + 1;
@@ -28,6 +33,11 @@ var Player = function (name) {
                 break;
             }
         };
+    };
+
+    this.getAllPlayersItems = function()
+    {
+        return this.units.concat(this.cities);
     };
 
     this.addCity = function (col, row) {

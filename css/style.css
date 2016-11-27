@@ -5,3 +5,6 @@ body
 }
 a, a:visited {color:#2DF;}
 * {font-size:18px;}
+
+#gameDiv {
+cursor:pointer;}
