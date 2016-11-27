@@ -39,7 +39,6 @@ var GameState = {
         game.selectorMarker.animations.play('blink', 6, true);
 
         game.getCurrentPlayer().newTurn();
-
     },
     	
 	

@@ -13,14 +13,21 @@ var PreloadState = {
 		this.load.setPreloadSprite(this.preloadBar);
 	
 		//gfx
-		this.load.image('background', 'gfx/background.png');
-		this.load.image('gameTiles', 'gfx/tiles.png');
-		this.load.image('soldierImage', 'gfx/unit.png');
-		this.load.image('castleImage', 'gfx/castle.png');
-		this.load.spritesheet('selectionImage', 'gfx/selection.png', 64, 64, 2);
+		this.load.image('background', 'gfx/background.png' + cacheBuster());
+		this.load.image('gameTiles', 'gfx/tiles.png' + cacheBuster() );
+		this.load.image('soldierImage', 'gfx/unit.png' + cacheBuster());
+		this.load.image('castleImage', 'gfx/castle.png' + cacheBuster());
+		this.load.spritesheet('selectionImage', "gfx/selection.png" + cacheBuster() , 64, 64, 2);
 	},
 
 	create: function () { 
 	    this.game.state.start('GameState');
 	}
+	
 };
+
+function cacheBuster ()
+{
+    return "?cb=" + Math.random();
+}
+
