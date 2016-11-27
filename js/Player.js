@@ -71,6 +71,25 @@
         unit.attack = attack;
         unit.defense = defense;
         unit.movesPerTurn = movement;
+
+        var style = { align: "center", fontSize: 18, fill: "white", stroke: "black", strokeThickness: 2 };
+
+        var statText = unit.attack + "/" + unit.defense + "/" + unit.movesPerTurn;
+        var stats = game.add.text(TileSize/2, 0 -25, statText, style);
+        stats.setShadow(3, 3, 'rgba(0,0,0,1)', 5);
+        stats.anchor.set(.5, 0);
+        unit.addChild(stats);
+            
+        unit.movesLeftText = game.add.text(TileSize / 2, TileSize+3, statText, style);
+        unit.movesLeftText.setShadow(3, 3, 'rgba(0,0,0,1)', 5);
+        unit.movesLeftText.anchor.set(.5, 0);
+        unit.addChild(unit.movesLeftText);
+
+        unit.update = function ()
+        {
+            this.movesLeftText.text = this.movesLeft + " moves";
+        }
+        
         unit.movesLeft = unit.movesPerTurn;
         unit.newTurn = function () {
             this.movesLeft = this.movesPerTurn;
