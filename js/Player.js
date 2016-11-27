@@ -11,27 +11,38 @@
             return this.selectedItem;
         }
     };
-    
+
+    this.getWoodPerTurn = function()
+    {
+        var woodPerTurn = 0;
+        for (var i = 0; i < this.cities.length; i++) {
+            woodPerTurn = this.cities[0].woodPerTurn;
+        }
+        return woodPerTurn;
+    };
+
     this.trySelect = function (col, row) {
         var allItems = this.getAllPlayersItems();
         for (var i = 0; i < allItems.length; i++) {
             if (allItems[i].col == col && allItems[i].row == row) {
                 this.selectedItem = allItems[i];
-            }
         }
+    }
     };
 
     this.selectNextItem = function () {
-        if (this.selectedItem == undefined) { this.selectedItem = this.cities[0]; }
+        if (this.selectedItem == undefined) {
+this.selectedItem = this.cities[0];
+    }
         var items = this.getAllPlayersItems();
         for (var i = 0; i < items.length; i++) {
             if (items[i] == this.selectedItem) {
-                var index = i + 1;
+                var index = i +1;
                 index = index % items.length;
                 this.selectedItem = items[index];
                 break;
-            }
         }
+    }
     };
 
     this.getAllPlayersItems = function () {
@@ -42,14 +53,14 @@
         var city = addSpriteToMap(col, row, 'castleImage');
         game.map.getTile(col, row).index = 0;
         city.woodPerTurn = game.mapHelper.get8Neighbors(game.map, city.col, city.row, 1).length;
-        city.grainPerTurn = 8 - city.woodPerTurn;
+        city.grainPerTurn = 8 -city.woodPerTurn;
         city.grain = 0;
         city.player = this;
         city.type = ItemTypes.BUILDING;
         city.newTurn = function () {
             city.player.wood += city.woodPerTurn;
             city.grain += city.grainPerTurn;
-        }
+    }
         this.cities.push(city);
         return city;
     };
@@ -64,7 +75,7 @@
         unit.movesLeft = unit.movesPerTurn;
         unit.newTurn = function () {
             this.movesLeft = this.movesPerTurn;
-        }
+    }
 
         this.units.push(unit);
 
@@ -74,10 +85,10 @@
     this.newTurn = function () {
         for (var i = 0; i < this.units.length; i++) {
             this.units[i].newTurn();
-        }
+    }
         for (var i = 0; i < this.cities.length; i++) {
             this.cities[i].newTurn();
-        }
+    }
     };
 }
 

@@ -22,7 +22,7 @@ var GameState = {
 
         game.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(function () { game.toggleCurrentPlayer(); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.C).onDown.add(function () {addNewCityIfPossible();}, this);
-        game.input.keyboard.addKey(Phaser.Keyboard.N).onDown.add(function () { game.getCurrentPlayer().selectNextItem(); }, this);
+        game.input.keyboard.addKey(Phaser.Keyboard.TAB).onDown.add(function () { game.getCurrentPlayer().selectNextItem(); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(function () { game.tryMove(0, -1); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.DOWN).onDown.add(function () { game.tryMove(0, 1); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.LEFT).onDown.add(function () { game.tryMove(-1, 0); }, this);
@@ -48,7 +48,7 @@ var GameState = {
 	{
 	    var currentPlayer = game.getCurrentPlayer();
 	    var item = currentPlayer.getSelectedItem();
-	    game.debugText.text = "Player: '" + currentPlayer.name + "' has " + game.getCurrentPlayer().wood + " wood ";
+	    game.debugText.text = "Player: '" + currentPlayer.name + "' has " + currentPlayer.wood + " wood and gets " + currentPlayer.getWoodPerTurn() + " more each turn.";
 	    game.debugText.text += "\nSelectedItem is a " + item.type + " at (x:" + item.col + ",y:" + item.row + ") ";
 	    switch (item.type)
 	    {
@@ -113,7 +113,6 @@ var GameState = {
                  }
              }
          }
-
     }
 }
 

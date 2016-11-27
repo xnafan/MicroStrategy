@@ -11,14 +11,19 @@
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <style>
         .explanation a {
-            color:silver#2B9EE8;margin-top:10px;font-size:14px;
-            text-decoration:none;
-            }
-            a:hover {color:#FFF500;}
+            color: silver#2B9EE8;
+            margin-top: 10px;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #FFF500;
+        }
     </style>
 </head>
 <body>
-   
+
     <script src="js/maphelper.js"></script>
     <script src="js/phaser.js"></script>
     <script src="js/Player.js"></script>
@@ -29,19 +34,20 @@
         game = new Phaser.Game(1024, 1024, Phaser.CANVAS, 'gameDiv');
         game.state.add('BootState', BootState);
         game.state.add('PreloadState', PreloadState);
-         game.state.add('GameState', GameState);
+        game.state.add('GameState', GameState);
         game.state.start('BootState');
     </script>
     <div id="outer" style="border:1px solid gray; margin: 0 auto; width:800px;">
         <div id="placeholder">
             <div id="gameDiv"></div>
-         </div>
-         <div style="text-align:center;font-family:verdana, arial,sans-serif;color:silver;margin:5px;font-size:14px;" class="explanation">
+        </div>
+        <div style="text-align:center;font-family:verdana, arial,sans-serif;color:silver;margin:5px;font-size:14px;" class="explanation">
             A little game for two strategists
-             <br/>Use arrow keys to move units
-<br />Use P to change to other player
-<br />Use N to go to next item (castle/unit)
-              </div>      
+            <br />Use arrow keys to move units
+            <br /><em>P</em> to change to other <u>P</u>layer
+            <br /><em>N</em> to go to <u>N</u>ext item (castle/unit)
+<br /><em>C</em> to <u>C</u>reate <u>C</u>ity(castle/unit)
+        </div>
     </div>
 </body>
 </html>
