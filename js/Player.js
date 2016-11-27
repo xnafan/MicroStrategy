@@ -12,11 +12,10 @@
         }
     };
 
-    this.getWoodPerTurn = function()
-    {
+    this.getWoodPerTurn = function () {
         var woodPerTurn = 0;
         for (var i = 0; i < this.cities.length; i++) {
-            woodPerTurn = this.cities[0].woodPerTurn;
+            woodPerTurn += this.cities[i].woodPerTurn;
         }
         return woodPerTurn;
     };
@@ -26,23 +25,23 @@
         for (var i = 0; i < allItems.length; i++) {
             if (allItems[i].col == col && allItems[i].row == row) {
                 this.selectedItem = allItems[i];
+            }
         }
-    }
     };
 
     this.selectNextItem = function () {
         if (this.selectedItem == undefined) {
-this.selectedItem = this.cities[0];
-    }
+            this.selectedItem = this.cities[0];
+        }
         var items = this.getAllPlayersItems();
         for (var i = 0; i < items.length; i++) {
             if (items[i] == this.selectedItem) {
-                var index = i +1;
+                var index = i + 1;
                 index = index % items.length;
                 this.selectedItem = items[index];
                 break;
+            }
         }
-    }
     };
 
     this.getAllPlayersItems = function () {
@@ -52,15 +51,15 @@ this.selectedItem = this.cities[0];
     this.addCity = function (col, row) {
         var city = addSpriteToMap(col, row, 'castleImage');
         game.map.getTile(col, row).index = 0;
-        city.woodPerTurn = game.mapHelper.get8Neighbors(game.map, city.col, city.row, 1).length;
-        city.grainPerTurn = 8 -city.woodPerTurn;
+        city.woodPerTurn = game.mapHelper.get8Neighbors(game.map, col, row, TileTypes.Forest).length;
+        city.grainPerTurn = 8 - city.woodPerTurn;
         city.grain = 0;
         city.player = this;
         city.type = ItemTypes.BUILDING;
         city.newTurn = function () {
             city.player.wood += city.woodPerTurn;
             city.grain += city.grainPerTurn;
-    }
+        }
         this.cities.push(city);
         return city;
     };
@@ -75,7 +74,7 @@ this.selectedItem = this.cities[0];
         unit.movesLeft = unit.movesPerTurn;
         unit.newTurn = function () {
             this.movesLeft = this.movesPerTurn;
-    }
+        }
 
         this.units.push(unit);
 
@@ -85,10 +84,10 @@ this.selectedItem = this.cities[0];
     this.newTurn = function () {
         for (var i = 0; i < this.units.length; i++) {
             this.units[i].newTurn();
-    }
+        }
         for (var i = 0; i < this.cities.length; i++) {
             this.cities[i].newTurn();
-    }
+        }
     };
 }
 
@@ -100,7 +99,7 @@ function addSpriteToMap(col, row, imageResourceName) {
 }
 
 //WHY can't this be added inside the definition of Player?
-function removeUnitFromPlayer (player, unitToRemove) {
+function removeUnitFromPlayer(player, unitToRemove) {
     player.selectNextItem();
     var indexOfItem = player.units.indexOf(unitToRemove);
     player.units.splice(indexOfItem, 1);

@@ -88,10 +88,12 @@ var GameState = {
              var player1 = new Player("player 1");
              var player2 = new Player("player 2");
 
+             controlSurroundingForests(1, 1, 3);
              var city1 = player1.addCity(1, 1);
-             controlCitySurroundings(city1);
+             
+             controlSurroundingForests(14, 14, 3);
              var city2 = player2.addCity(14, 14);
-             controlCitySurroundings(city2);
+             
 
              player1.addUnit(2, 2, 1, 1, 2);
              player2.addUnit(13, 13, 1, 1, 2);
@@ -131,14 +133,14 @@ function addNewCityIfPossible() {
     }
 }
 
-function controlCitySurroundings(city)
+function controlSurroundingForests(col, row, maxForests)
 {
-    var neighbors = game.mapHelper.get8Neighbors(game.map, city.col, city.row);
+    var neighbors = game.mapHelper.get8Neighbors(game.map, col, row);
     for (var i = 0; i < neighbors.length; i++) {
         neighbors[i].index = TileTypes.Grass;
     }
     var randomForesTileIndexesAlreadyUsed = [];
-    while (randomForesTileIndexesAlreadyUsed.length < 3)
+    while (randomForesTileIndexesAlreadyUsed.length < maxForests)
     {
         var randomIndex = Math.floor(Math.random() * neighbors.length);
         if (randomForesTileIndexesAlreadyUsed.indexOf(randomIndex) == -1)
