@@ -28,13 +28,18 @@ var GameState = {
         game.input.keyboard.addKey(Phaser.Keyboard.RIGHT).onDown.add(function () { game.tryMove(1,0); }, this);
 
         game.currentPlayerIndex = 0;
-        game.toggleCurrentPlayer = function () { game.currentPlayerIndex = 1 - game.currentPlayerIndex;}
+        game.toggleCurrentPlayer = function () {
+            game.currentPlayerIndex = 1 - game.currentPlayerIndex;
+            game.getCurrentPlayer().newTurn();
+        }
         game.getCurrentPlayer = function () { return game.players[game.currentPlayerIndex]; }
         game.createPlayers(2);
-
+        
         game.selectorMarker = game.add.sprite(200, 200, 'selectionImage');
         game.selectorMarker.animations.add('blink', [0, 1]);
         game.selectorMarker.animations.play('blink', 6, true);
+
+        game.getCurrentPlayer().newTurn();
 
     },
     	
@@ -42,9 +47,20 @@ var GameState = {
 	update: function ()
 	{
 	    var currentPlayer = game.getCurrentPlayer();
+	    var item = currentPlayer.getSelectedItem();
 	    game.debugText.text = "Current player: " + currentPlayer.name + "  wood " + game.getCurrentPlayer().cities[0].wood;
+	    game.debugText.text += "\n selectedItem: (x:" + item.col + ",y:" + item.row + ")";
+	    switch (item.type)
+	    {
+	        case UnitTypes.UNIT :
+	            game.debugText.text += "moves left: " + item.movesLeft;
+	            break;
 
-	    game.debugText.text += "\n selectedItem: " + currentPlayer.getSelectedItem().col + "  "+ currentPlayer.getSelectedItem().row ;
+	        case UnitTypes.BUILDING:
+	            game.debugText.text += ", grain: " + item.grain + ", wood: " + item.wood;
+	            break;
+	    }
+	    
 	    game.selectorMarker.x = currentPlayer.getSelectedItem().x;
 	    game.selectorMarker.y = currentPlayer.getSelectedItem().y;
 	},
@@ -61,8 +77,8 @@ var GameState = {
              player1.addCity(1, 1);
              player2.addCity(14, 14);
 
-             player1.addUnit(2, 2, 1, 1, 1);
-             player2.addUnit(13, 13, 1, 1, 1);
+             player1.addUnit(2, 2, 1, 1, 3);
+             player2.addUnit(13, 13, 1, 1, 3);
 
              game.players.push(player1);
              game.players.push(player2);   
@@ -70,7 +86,7 @@ var GameState = {
 
          game.tryMove = function (deltaX, deltaY) {
              var piece = game.getCurrentPlayer().getSelectedItem();
-             if (piece.unitType == UnitTypes.UNIT) {
+             if (piece.type === UnitTypes.UNIT && piece.movesLeft > 0) {
 
                  var newCol = piece.col + deltaX;
                  var newRow = piece.row + deltaY;
@@ -79,6 +95,7 @@ var GameState = {
                      piece.row = newRow;
                      piece.x = newCol * TileSize;
                      piece.y = newRow * TileSize;
+                     piece.movesLeft--;
                  }
              }
          }

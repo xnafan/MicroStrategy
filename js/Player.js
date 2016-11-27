@@ -13,8 +13,6 @@ var Player = function (name) {
         }
     };
 
-    
-
     this.selectNextItem = function () {
         if (this.selectedItem == undefined) { this.selectedItem = this.cities[0]; }
         var items = [];
@@ -32,27 +30,54 @@ var Player = function (name) {
     };
 
     this.addCity = function (col, row) {
-        var city = game.add.sprite(col * TileSize, row * TileSize, 'castleImage');
-        city.col = col;
-        city.row = row;
+        var city= addSpriteToMap(col, row, 'castleImage');
         game.map.getTile(col, row).index = 0;
-        city.wood = game.mapHelper.get8Neighbors(game.map, city.col, city.row, 1).length;
-        city.unitType = UnitTypes.BUILDING;
+        city.woodPerTurn = game.mapHelper.get8Neighbors(game.map, city.col, city.row, 1).length;
+        city.grainPerTurn = 8 - city.woodPerTurn;
+        city.wood = 0;
+        city.grain = 0;
+        city.type = UnitTypes.BUILDING;
+        city.newTurn = function ()
+        {
+            city.wood += city.woodPerTurn;
+            city.grain += city.grainPerTurn;
+        }
         this.cities.push(city);
         return city;
     };
 
     this.addUnit = function (col, row, attack, defense, movement) {
 
-        var unit = game.add.sprite(col * TileSize, row * TileSize, 'soldierImage');
-        unit.col = col;
-        unit.row = row;
+        var unit = addSpriteToMap(col, row, 'soldierImage');
+        unit.type = UnitTypes.UNIT;
         unit.attack = attack;
         unit.defense = defense;
-        unit.movement = movement;
-        unit.unitType = UnitTypes.UNIT;
+        unit.movesPerTurn = movement;
+        unit.movesLeft = unit.movesPerTurn;
+        unit.newTurn = function ()
+        {
+            this.movesLeft = this.movesPerTurn;
+        }
+        
         this.units.push(unit);
 
         return unit;
     };
+
+    this.newTurn = function () {
+        for (var i = 0; i < this.units.length; i++) {
+            this.units[i].newTurn();
+        }
+        for (var i = 0; i < this.cities.length; i++) {
+            this.cities[i].newTurn();
+        }
+    };
+}
+
+function addSpriteToMap(col, row, imageResourceName)
+{ 
+    var sprite = game.add.sprite(col * TileSize, row * TileSize, imageResourceName );
+    sprite.col = col;
+    sprite.row = row;
+    return sprite;
 }

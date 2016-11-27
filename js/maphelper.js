@@ -67,7 +67,7 @@ MapHelper.prototype.isOnMap = function (x, y)
      for (var property in MapHelper.prototype.Directions) {
          var dir = MapHelper.prototype.Directions[property];
          var newCoord = { x: col + dir.x, y: row + dir.y };
-         if (MapHelper.prototype.isOnMap(newCoord)) {
+         if (MapHelper.prototype.isOnMap(newCoord.x, newCoord.y)) {
              var tile = map.getTile(newCoord.x, newCoord.y);
              if (mapTileTypeToCount == undefined || (tile.index == mapTileTypeToCount)) {
                  neighbors.push(tile);
