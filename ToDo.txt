@@ -25,7 +25,7 @@ NiceToHaves:
 - little text beneath icon with stats, i.e. 1/1/2
 - small production icons on cities with grain/wood production, current grain storage, and have the city blink/pulse when
 	it is ready to produce a new unit
-
+- only show stats for unit, when it is selected, to not clutter the map.
 
 
 
