@@ -21,12 +21,18 @@
     };
 
     this.trySelect = function (col, row) {
+        var itemInTile = this.getPlayersItemAt(col, row);
+        if (itemInTile != undefined) { this.selectedItem = itemInTile;}
+    };
+
+    this.getPlayersItemAt = function (col, row) {
         var allItems = this.getAllPlayersItems();
         for (var i = 0; i < allItems.length; i++) {
             if (allItems[i].col == col && allItems[i].row == row) {
-                this.selectedItem = allItems[i];
+                return allItems[i];
             }
         }
+        return undefined;
     };
 
     this.selectNextItem = function () {
@@ -59,6 +65,16 @@
         city.newTurn = function () {
             city.player.wood += city.woodPerTurn;
             city.grain += city.grainPerTurn;
+            var costOfNewUnits = 15;   //to be changed based on what units are created
+            if (city.grain >= costOfNewUnits)
+            {
+               var freeTile = getFreeTileAroundCityForNewUnit(city.col, city.row);
+               if (freeTile != undefined)
+               {
+                   city.player.addUnit(freeTile.x, freeTile.y, 1, 1, 2);
+                   city.grain -= costOfNewUnits;
+               }
+            }
         }
         this.cities.push(city);
         return city;
