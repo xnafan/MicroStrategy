@@ -5,8 +5,8 @@ var MapCenter = { x: MapColumns / 2, y: MapRows / 2 };
 var keyInputDelayInMs = 200;
 var startingPosition = { x: MapCenter.x, y: MapCenter.y };
 var CityPriceInWood = 25;
-var ItemTypes = { UNIT: "UNIT", BUILDING: "BUILDING" };
-var TileTypes = { Grass: 0, Forest: 1 };
+var ItemTypes = { UNIT: "UNIT", BUILDING: "BUILDING"};
+var TileTypes = { Grass: 0, Forest: 1, FogOfWar : 2 };
 
 var GameState = {
 
@@ -35,11 +35,10 @@ var GameState = {
         }
         game.getCurrentPlayer = function () { return game.players[game.currentPlayerIndex]; }
         game.createPlayers(2);
-        
+       
         game.selectorMarker = game.add.sprite(200, 200, 'selectionImage');
         game.selectorMarker.animations.add('blink', [0, 1]);
         game.selectorMarker.animations.play('blink', 6, true);
-
         game.getCurrentPlayer().newTurn();
     },
     	
@@ -74,7 +73,7 @@ var GameState = {
          game.load.tilemap('theMap', null, game.mapHelper.mapDataToCSV(), Phaser.Tilemap.CSV);
          game.map = game.add.tilemap('theMap', 64, 64, 16, 16);
          game.map.addTilesetImage('gameTiles');
-         game.map.backgroundLayer = game.map.createLayer(0);
+         game.map.backgroundLayer = game.map.createLayer(0);         
 
          game.trySelect = function (col, row)
          {
@@ -116,6 +115,7 @@ var GameState = {
                      piece.movesLeft--;
                  }
              }
+             updateFogOfWar();
          }
     }
 }
@@ -131,54 +131,4 @@ function addNewCityIfPossible() {
             currentPlayer.wood -= CityPriceInWood;
         }
     }
-}
-
-function controlSurroundingForests(col, row, maxForests)
-{
-    var neighbors = game.mapHelper.get8Neighbors(game.map, col, row);
-    for (var i = 0; i < neighbors.length; i++) {
-        neighbors[i].index = TileTypes.Grass;
-    }
-    var randomForestTileIndexesAlreadyUsed = [];
-    while (randomForestTileIndexesAlreadyUsed.length < maxForests)
-    {
-        var randomIndex = Math.floor(Math.random() * neighbors.length);
-        if (randomForestTileIndexesAlreadyUsed.indexOf(randomIndex) == -1)
-        {
-            randomForestTileIndexesAlreadyUsed.push(randomIndex);
-            neighbors[randomIndex].index = TileTypes.Forest;
-        }
-    }
-}
-
-function getFreeTileAroundCityForNewUnit(cityCol, cityRow)
-{  
-    var allItemsInPlay = [];
- 
-    for (var playerCounter = 0; playerCounter < game.players.length; playerCounter++) {
-        var playersItems = game.players[playerCounter].getAllPlayersItems();
-        for (var itemCounter = 0; itemCounter < playersItems.length; itemCounter++) {
-            allItemsInPlay.push(playersItems[itemCounter]);
-        }
-    }
-
-    var tilesAroundCity = game.mapHelper.get8Neighbors(game.map, cityCol, cityRow);
-
-    var freeTilesAroundCity = [];
-    for (var tileCounter = 0; tileCounter < tilesAroundCity.length; tileCounter++) {
-        var tileIsFree = true;
-        var tileToTest = tilesAroundCity[tileCounter];
-        for (var itemCounter = 0; itemCounter < allItemsInPlay.length; itemCounter++) {
-            var itemToTest = allItemsInPlay[itemCounter];
-            if( itemToTest.col == tileToTest.x && itemToTest.row == tileToTest.y)
-            {
-                tileIsFree = false;
-                break;
-            }
-        }
-        if (tileIsFree) { freeTilesAroundCity.push(tileToTest); }
-    }
-      
-    if (freeTilesAroundCity.length == 0) { return undefined; }
-    return freeTilesAroundCity[Math.floor(Math.random() * freeTilesAroundCity.length)];
 }

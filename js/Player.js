@@ -3,6 +3,7 @@
     this.cities = [];
     this.units = [];
     this.wood = 0;
+    this.fogOfWar = createFogOfWar();
     this.selectedItem = undefined;
     this.getSelectedItem = function () {
         if (this.selectedItem != undefined) { return this.selectedItem; }
@@ -127,6 +128,8 @@
         for (var i = 0; i < this.cities.length; i++) {
             this.cities[i].newTurn();
         }
+        updateFogOfWar();
+        
     };
 }
 
@@ -142,4 +145,20 @@ function removeUnitFromPlayer(player, unitToRemove) {
     player.selectNextItem();
     var indexOfItem = player.units.indexOf(unitToRemove);
     player.units.splice(indexOfItem, 1);
-};
+}
+
+function getAllItemsCurrentlyInPlay() {
+    var allItems = [];
+    for (var playerCounter = 0; playerCounter < game.players.length; playerCounter++) {
+        var playersItems = game.players[playerCounter].getAllPlayersItems();
+        for (var itemCounter = 0; itemCounter < playersItems.length; itemCounter++) {
+            allItems.push(playersItems[itemCounter]);
+        }
+    }
+    return allItems;
+}
+
+function createFogOfWar()
+{
+    return game.mapHelper.createEmptyMap(16, 16, TileTypes.FogOfWar);
+}
