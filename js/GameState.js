@@ -11,7 +11,7 @@ var TileTypes = { Grass: 0, Forest: 1, FogOfWar : 2 };
 var GameState = {
 
     create: function () {
-        
+
         game.restartGame = function () { game.state.start('GameState', true, false); };
         game.stage.backgroundColor = '#2d2d2d';
         game.cursors = game.input.keyboard.createCursorKeys();
@@ -22,12 +22,11 @@ var GameState = {
 
         game.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(function () { game.toggleCurrentPlayer(); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.B).onDown.add(function () { addNewCityIfPossible(); }, this);
-        game.input.keyboard.addKey(Phaser.Keyboard.TAB).onDown.add(function () { game.getCurrentPlayer().selectNextItem(); }, this);
+        game.input.keyboard.addKey(Phaser.Keyboard.TAB).onDown.add(function () { game.getCurrentPlayer().selectNextItem(true); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(function () { game.tryMove(0, -1); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.DOWN).onDown.add(function () { game.tryMove(0, 1); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.LEFT).onDown.add(function () { game.tryMove(-1, 0); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.RIGHT).onDown.add(function () { game.tryMove(1,0); }, this);
-
         game.currentPlayerIndex = 0;
         game.toggleCurrentPlayer = function () {
             game.currentPlayerIndex = 1 - game.currentPlayerIndex;

@@ -23,7 +23,7 @@
 
     this.trySelect = function (col, row) {
         var itemInTile = this.getPlayersItemAt(col, row);
-        if (itemInTile != undefined) { this.selectedItem = itemInTile;}
+        if (itemInTile != undefined) { this.selectedItem = itemInTile; }
     };
 
     this.getPlayersItemAt = function (col, row) {
@@ -36,17 +36,21 @@
         return undefined;
     };
 
-    this.selectNextItem = function () {
-        if (this.selectedItem == undefined) {
-            this.selectedItem = this.cities[0];
-        }
-        var items = this.getAllPlayersItems();
-        for (var i = 0; i < items.length; i++) {
-            if (items[i] == this.selectedItem) {
-                var index = i + 1;
-                index = index % items.length;
-                this.selectedItem = items[index];
-                break;
+    this.selectNextItem = function (onlyUnitsWithMovesLeft) {
+
+        var items = game.getCurrentPlayer().units;
+        if (items.length == 0) { return; }
+        if (items.length == 1 || this.selectedItem == undefined) { this.selectedItem = this.units[0]; return; }
+
+        var selectionCandidateIndex = items.indexOf(this.selectedItem);
+        if(selectionCandidateIndex == -1){selectionCandidateIndex = 0;}
+         
+        for (var deltaCandidateIndex = 1; deltaCandidateIndex <= items.length; deltaCandidateIndex++) {
+            var realIndex = (selectionCandidateIndex + deltaCandidateIndex) % items.length;
+            var selectionCandidate = items[realIndex];
+            if (!onlyUnitsWithMovesLeft || (onlyUnitsWithMovesLeft == true && selectionCandidate.movesLeft > 0)) {
+                this.selectedItem = selectionCandidate;
+                break;  
             }
         }
     };
@@ -67,14 +71,12 @@
             city.player.wood += city.woodPerTurn;
             city.grain += city.grainPerTurn;
             var costOfNewUnits = 15;   //to be changed based on what units are created
-            if (city.grain >= costOfNewUnits)
-            {
-               var freeTile = getFreeTileAroundCityForNewUnit(city.col, city.row);
-               if (freeTile != undefined)
-               {
-                   city.player.addUnit(freeTile.x, freeTile.y, 1, 1, 2);
-                   city.grain -= costOfNewUnits;
-               }
+            if (city.grain >= costOfNewUnits) {
+                var freeTile = getFreeTileAroundCityForNewUnit(city.col, city.row);
+                if (freeTile != undefined) {
+                    city.player.addUnit(freeTile.x, freeTile.y, 1, 1, 2);
+                    city.grain -= costOfNewUnits;
+                }
             }
         }
         this.cities.push(city);
@@ -92,25 +94,24 @@
         var style = { align: "center", fontSize: 18, fill: "white", stroke: "black", strokeThickness: 2 };
 
         var statText = unit.attack + "/" + unit.defense + "/" + unit.movesPerTurn;
-        unit.stats = game.add.text(TileSize/2, 0 -25, statText, style);
+        unit.stats = game.add.text(TileSize / 2, 0 - 10, statText, style);
         unit.stats.setShadow(3, 3, 'rgba(0,0,0,1)', 5);
         unit.stats.anchor.set(.5, 0);
         unit.addChild(unit.stats);
-            
-        unit.movesLeftText = game.add.text(TileSize / 2, TileSize+3, statText, style);
+
+        unit.movesLeftText = game.add.text(TileSize / 2, TileSize - 3, statText, style);
         unit.movesLeftText.setShadow(3, 3, 'rgba(0,0,0,1)', 5);
         unit.movesLeftText.anchor.set(.5, 0);
         unit.addChild(unit.movesLeftText);
-        
 
-        unit.update = function ()
-        {
+
+        unit.update = function () {
             this.movesLeftText.text = this.movesLeft + " moves";
-            var visibleStats = (game.getCurrentPlayer() == this.player);
+            var visibleStats = (game.getCurrentPlayer().selectedItem == this);
             this.stats.visible = visibleStats;
             this.movesLeftText.visible = visibleStats;
         }
-        
+
         unit.movesLeft = unit.movesPerTurn;
         unit.newTurn = function () {
             this.movesLeft = this.movesPerTurn;
@@ -129,7 +130,7 @@
             this.cities[i].newTurn();
         }
         updateFogOfWar();
-        
+
     };
 }
 
@@ -158,7 +159,6 @@ function getAllItemsCurrentlyInPlay() {
     return allItems;
 }
 
-function createFogOfWar()
-{
+function createFogOfWar() {
     return game.mapHelper.createEmptyMap(16, 16, TileTypes.FogOfWar);
 }
