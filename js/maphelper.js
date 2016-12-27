@@ -40,12 +40,11 @@ MapHelper.prototype.randomizeMap = function () {
 
 // Helperfunctions
 
-MapHelper.prototype.isOnMap = function (x, y)
-{
-	return (x >= 0 && y >= 0 && x < MapHelper.prototype.map.length && y < MapHelper.prototype.map[0].length);
+MapHelper.prototype.isOnMap = function (x, y) {
+    return (x >= 0 && y >= 0 && x < MapHelper.prototype.map.length && y < MapHelper.prototype.map[0].length);
 }
 
- MapHelper.prototype.mapDataToCSV = function() {
+MapHelper.prototype.mapDataToCSV = function () {
 
     var csvMapString = "";
     var valueSplitter = "";
@@ -61,118 +60,126 @@ MapHelper.prototype.isOnMap = function (x, y)
         lineSplitter = "\n";
     }
     return csvMapString;
- }
+}
 
- MapHelper.prototype.get8Neighbors = function (map, col, row,mapTileTypeToGet) {
-     var neighbors = [];
-     for (var property in MapHelper.prototype.Directions) {
-         var dir = MapHelper.prototype.Directions[property];
-         var newCoord = { x: col + dir.x, y: row + dir.y };
-         if (MapHelper.prototype.isOnMap(newCoord.x, newCoord.y)) {
-             var tile = map.getTile(newCoord.x, newCoord.y);
-             if (mapTileTypeToGet == undefined || (tile.index == mapTileTypeToGet)) {
-                 neighbors.push(tile);
-             }
-         }
-     }
-     return neighbors;
- }
+MapHelper.prototype.get8Neighbors = function (map, col, row, mapTileTypeToGet) {
+    var neighbors = [];
+    for (var property in MapHelper.prototype.Directions) {
+        var dir = MapHelper.prototype.Directions[property];
+        var newCoord = { x: col + dir.x, y: row + dir.y };
+        if (MapHelper.prototype.isOnMap(newCoord.x, newCoord.y)) {
+            var tile = map.getTile(newCoord.x, newCoord.y);
+            if (mapTileTypeToGet == undefined || (tile.index == mapTileTypeToGet)) {
+                neighbors.push(tile);
+            }
+        }
+    }
+    return neighbors;
+}
 
 
- function controlSurroundingForests(col, row, maxForests) {
-     var neighbors = game.mapHelper.get8Neighbors(game.map, col, row);
-     for (var i = 0; i < neighbors.length; i++) {
-         neighbors[i].index = TileTypes.Grass;
-     }
-     var randomForestTileIndexesAlreadyUsed = [];
-     while (randomForestTileIndexesAlreadyUsed.length < maxForests) {
-         var randomIndex = Math.floor(Math.random() * neighbors.length);
-         if (randomForestTileIndexesAlreadyUsed.indexOf(randomIndex) == -1) {
-             randomForestTileIndexesAlreadyUsed.push(randomIndex);
-             neighbors[randomIndex].index = TileTypes.Forest;
-         }
-     }
- }
+function controlSurroundingForests(col, row, maxForests) {
+    var neighbors = game.mapHelper.get8Neighbors(game.map, col, row);
+    for (var i = 0; i < neighbors.length; i++) {
+        neighbors[i].index = TileTypes.Grass;
+    }
+    var randomForestTileIndexesAlreadyUsed = [];
+    while (randomForestTileIndexesAlreadyUsed.length < maxForests) {
+        var randomIndex = Math.floor(Math.random() * neighbors.length);
+        if (randomForestTileIndexesAlreadyUsed.indexOf(randomIndex) == -1) {
+            randomForestTileIndexesAlreadyUsed.push(randomIndex);
+            neighbors[randomIndex].index = TileTypes.Forest;
+        }
+    }
+}
 
- function getFreeTileAroundCityForNewUnit(cityCol, cityRow) {
-     var allItemsInPlay = getAllItemsCurrentlyInPlay();
-     var tilesAroundCity = game.mapHelper.get8Neighbors(game.map, cityCol, cityRow);
-     var freeTilesAroundCity = [];
-     for (var tileCounter = 0; tileCounter < tilesAroundCity.length; tileCounter++) {
-         var tileIsFree = true;
-         var tileToTest = tilesAroundCity[tileCounter];
-         for (var itemCounter = 0; itemCounter < allItemsInPlay.length; itemCounter++) {
-             var itemToTest = allItemsInPlay[itemCounter];
-             if (itemToTest.col == tileToTest.x && itemToTest.row == tileToTest.y) {
-                 tileIsFree = false;
-                 break;
-             }
-         }
-         if (tileIsFree) { freeTilesAroundCity.push(tileToTest); }
-     }
+function getFreeTileAroundCityForNewUnit(cityCol, cityRow) {
+    var allItemsInPlay = getAllItemsCurrentlyInPlay();
+    var tilesAroundCity = game.mapHelper.get8Neighbors(game.map, cityCol, cityRow);
+    var freeTilesAroundCity = [];
+    for (var tileCounter = 0; tileCounter < tilesAroundCity.length; tileCounter++) {
+        var tileIsFree = true;
+        var tileToTest = tilesAroundCity[tileCounter];
+        for (var itemCounter = 0; itemCounter < allItemsInPlay.length; itemCounter++) {
+            var itemToTest = allItemsInPlay[itemCounter];
+            if (itemToTest.col == tileToTest.x && itemToTest.row == tileToTest.y) {
+                tileIsFree = false;
+                break;
+            }
+        }
+        if (tileIsFree) { freeTilesAroundCity.push(tileToTest); }
+    }
 
-     if (freeTilesAroundCity.length == 0) { return undefined; }
-     return freeTilesAroundCity[Math.floor(Math.random() * freeTilesAroundCity.length)];
- }
+    if (freeTilesAroundCity.length == 0) { return undefined; }
+    return freeTilesAroundCity[Math.floor(Math.random() * freeTilesAroundCity.length)];
+}
 
- function updateMapAccordingToFogOfWar()
- {
-     var fogOfWar = game.getCurrentPlayer().fogOfWar;
-     for (var x = 0; x < game.map.width; x++) {
-         for (var y = 0; y < game.map.height; y++) {
-             var tile = game.map.getTile(x, y);
-             if (fogOfWar[x][y] == TileTypes.FogOfWar)
-             {
-                 if (tile.originalIndex == undefined)
-                 {
-                     tile.originalIndex = tile.index;
-                 }
-                 tile.index = TileTypes.FogOfWar;
-             }
-             else {
-                 if (tile.originalIndex != undefined)
-                 {
-                 tile.index = tile.originalIndex;
-             }
-             }
-         }
-     }
- }
+function updateMapAccordingToFogOfWar() {
+    var fogOfWar = game.getCurrentPlayer().fogOfWar;
+    for (var x = 0; x < game.map.width; x++) {
+        for (var y = 0; y < game.map.height; y++) {
+            var tile = game.map.getTile(x, y);
+            if (fogOfWar[x][y] == TileTypes.FogOfWar) {
+                if (tile.originalIndex == undefined) {
+                    tile.originalIndex = tile.index;
+                }
+                tile.index = TileTypes.FogOfWar;
+            }
+            else {
+                if (tile.originalIndex != undefined) {
+                    tile.index = tile.originalIndex;
+                }
+            }
+        }
+    }
+}
 
- function revealMapAroundTile(col, row)
- {
-     var tilesToReveal = game.mapHelper.get8Neighbors(game.map, col, row);
-     tilesToReveal.push(game.map.getTile(col, row));
-     var fogOfWar = game.getCurrentPlayer().fogOfWar;
-     for (var tileCounter = 0; tileCounter < tilesToReveal.length; tileCounter++) {
-         fogOfWar[tilesToReveal[tileCounter].x][tilesToReveal[tileCounter].y] = 0;
-     }
- }
- 
- function updateFogOfWar()
- {
-     clearFogOfWarAroundCurrentPlayersItems();
-     hideOrShowItemsAccordingToFogOfWar();
-     updateMapAccordingToFogOfWar();
-     game.map.backgroundLayer.dirty = true;
- }
+function revealMapAroundTile(col, row) {
+    var playersFogOfWar = game.getCurrentPlayer().fogOfWar;
+    var tilesToReveal = game.mapHelper.get8Neighbors(game.map, col, row);
+    tilesToReveal.push(game.map.getTile(col, row));
+    for (var i = 0; i < tilesToReveal.length; i++) {
+        var tile = tilesToReveal[i];
+        game.gfx.fogOfWarMask.x = tile.x * TileSize + TileSize / 2;
+        game.gfx.fogOfWarMask.y = tile.y * TileSize + TileSize / 2;
+        game.gfx.fogOfWarMixer.clear();
+        game.gfx.fogOfWarMixer.draw(game.gfx.fogOfWarMask).blendSourceOut().draw(playersFogOfWar).blendReset();
+        game.gfx.fogOfWar.clear();
+        playersFogOfWar.clear();
+        playersFogOfWar.draw(game.gfx.fogOfWarMixer);
+        game.gfx.fogOfWar.draw(game.gfx.fogOfWarMixer);
+    }
+}
 
- function clearFogOfWarAroundCurrentPlayersItems()
- {
-     var itemsToRevealMapFor = game.getCurrentPlayer().getAllPlayersItems();
-     for (var itemCounter = 0; itemCounter < itemsToRevealMapFor.length; itemCounter++) {
-         var tile = itemsToRevealMapFor[itemCounter];
-         revealMapAroundTile(tile.col, tile.row);
-     }
- }
+function updateFogOfWar() {
+    clearFogOfWarAroundCurrentPlayersItems();
 
- function hideOrShowItemsAccordingToFogOfWar()
- {
-     var fogOfWar = game.getCurrentPlayer().fogOfWar;
-     var allItems = getAllItemsCurrentlyInPlay();
-     for (var itemCounter = 0; itemCounter < allItems.length; itemCounter++) {
-         var item = allItems[itemCounter];
-         item.visible = (fogOfWar[item.col][item.row] != TileTypes.FogOfWar);
-     }
+}
 
- }
+function clearFogOfWarAroundCurrentPlayersItems() {
+    var itemsToRevealMapFor = game.getCurrentPlayer().getAllPlayersItems();
+
+    for (var itemCounter = 0; itemCounter < itemsToRevealMapFor.length; itemCounter++) {
+        var tile = itemsToRevealMapFor[itemCounter];
+        revealMapAroundTile(tile.col, tile.row);
+    }
+}
+
+function hideOrShowItemsAccordingToFogOfWar() {
+    var fogOfWar = game.getCurrentPlayer().fogOfWar;
+    var allItems = getAllItemsCurrentlyInPlay();
+    for (var itemCounter = 0; itemCounter < allItems.length; itemCounter++) {
+        var item = allItems[itemCounter];
+        item.visible = (fogOfWar[item.col][item.row] != TileTypes.FogOfWar);
+    }
+
+}
+
+function getItemInTile(col, row) {
+    for (var i = 0; i < game.players.length; i++) {
+        var item = game.players[i].getPlayersItemAt(col, row);
+        if (item != undefined) {
+            return item;
+        }
+    }
+}

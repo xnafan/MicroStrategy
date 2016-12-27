@@ -14,12 +14,12 @@ var GameState = {
 
         game.restartGame = function () { game.state.start('GameState', true, false); };
         game.stage.backgroundColor = '#2d2d2d';
+
         game.cursors = game.input.keyboard.createCursorKeys();
-        game.debugText = game.add.text(10, 0, "Currentplayers");
+        game.debugText = game.add.text(10, 0, "Currentplayers",{}, game.overlayLayer);
         game.debugText.fill = '#ffffaa';
         game.debugText.fontSize = 24;
         game.debugText.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
-
         game.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(function () { game.toggleCurrentPlayer(); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.B).onDown.add(function () { addNewCityIfPossible(); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.TAB).onDown.add(function () { game.getCurrentPlayer().selectNextItem(true); }, this);
@@ -33,11 +33,18 @@ var GameState = {
             game.getCurrentPlayer().newTurn();
         }
         game.getCurrentPlayer = function () { return game.players[game.currentPlayerIndex]; }
+        
         game.createPlayers(2);
        
         game.selectorMarker = game.add.sprite(200, 200, 'selectionImage');
         game.selectorMarker.animations.add('blink', [0, 1]);
         game.selectorMarker.animations.play('blink', 6, true);
+        
+		//game.add.sprite(0,0,game.gfx.fogOfWar);
+    //    game.gfx.sort = game.add.sprite(0,0,"blackness");
+    //    game.gfx.sort.width = 1024;
+    //    game.gfx.sort.height = 1024;
+        game.add.sprite(0,0,game.gfx.fogOfWar);
         game.getCurrentPlayer().newTurn();
     },
     	
@@ -64,6 +71,12 @@ var GameState = {
 	},
     
 	preload: function () {
+        game.mapLayer = game.add.group();
+        game.gameItemsLayer = game.add.group();
+        game.fogOfWarLayer = game.add.group();
+        //game.fogOfWarLayer.add(game.gfx.fogOfWar);
+        game.overlayLayer = game.add.group();
+
 	    game.input.onDown.add(function (pointer, event) {
 	        var clickedTile = game.map.getTileWorldXY(pointer.x, pointer.y);
 	        game.trySelect(clickedTile.x, clickedTile.y);
@@ -71,9 +84,10 @@ var GameState = {
          game.mapHelper = new MapHelper(MapColumns, MapRows);
          game.load.tilemap('theMap', null, game.mapHelper.mapDataToCSV(), Phaser.Tilemap.CSV);
          game.map = game.add.tilemap('theMap', 64, 64, 16, 16);
+         
          game.map.addTilesetImage('gameTiles');
          game.map.backgroundLayer = game.map.createLayer(0);         
-
+        game.mapLayer.add(game.map.backgroundLayer);
          game.trySelect = function (col, row)
          {
              //alert("col:" + col + ",row:" + row);
@@ -107,14 +121,17 @@ var GameState = {
                  var newCol = piece.col + deltaX;
                  var newRow = piece.row + deltaY;
                  if (game.mapHelper.isOnMap(newCol, newRow)) {
+
                      piece.col = newCol;
                      piece.row = newRow;
                      piece.x = newCol * TileSize;
                      piece.y = newRow * TileSize;
                      piece.movesLeft--;
-                 }
+                 
+                }
              }
              updateFogOfWar();
+             game.world.bringToTop(game.overlayLayer);
          }
     }
 }

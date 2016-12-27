@@ -1,0 +1,36 @@
+<html>
+	<head>
+		<script>
+			function Unit(name)
+			{
+				this.name = name;
+				this.hp = 5;
+				this.incrementAmount();
+				this.getCompleteAmount = function()
+				{return Unit.amount;}
+			}
+			
+			Unit.prototype.incrementAmount = function ()
+			{
+				Unit.amount = ++Unit.amount || 1;				
+			}
+			
+
+			
+			function show(unit, div)
+			{
+				document.getElementById(div).innerText = "name: " + unit.name + " amount created: " + unit.getCompleteAmount();
+			}
+		</script>
+	</head>
+	<body>
+		<div id="unit1s"></div>
+		<div id="unit2s"></div>
+		<script>
+					var unit1 = new Unit("Carsten");
+			show(unit1, "unit1s");
+			var unit2 = new Unit("Jakob");
+			show(unit2, "unit2s");	
+		</script>
+	</body>
+</html>

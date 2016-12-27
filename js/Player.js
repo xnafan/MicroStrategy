@@ -43,14 +43,14 @@
         if (items.length == 1 || this.selectedItem == undefined) { this.selectedItem = this.units[0]; return; }
 
         var selectionCandidateIndex = items.indexOf(this.selectedItem);
-        if(selectionCandidateIndex == -1){selectionCandidateIndex = 0;}
-         
+        if (selectionCandidateIndex == -1) { selectionCandidateIndex = 0; }
+
         for (var deltaCandidateIndex = 1; deltaCandidateIndex <= items.length; deltaCandidateIndex++) {
             var realIndex = (selectionCandidateIndex + deltaCandidateIndex) % items.length;
             var selectionCandidate = items[realIndex];
             if (!onlyUnitsWithMovesLeft || (onlyUnitsWithMovesLeft == true && selectionCandidate.movesLeft > 0)) {
                 this.selectedItem = selectionCandidate;
-                break;  
+                break;
             }
         }
     };
@@ -130,12 +130,14 @@
             this.cities[i].newTurn();
         }
         updateFogOfWar();
-
+        //game.gfx.fogOfWar.circle(32,32,16, "rgba(0,100,0,1)");
+        // game.gfx.fogOfWar.alphaMask(game.gfx.blackness, game.gfx.fogOfWarMask);
     };
 }
 
 function addSpriteToMap(col, row, imageResourceName) {
-    var sprite = game.add.sprite(col * TileSize, row * TileSize, imageResourceName);
+    var sprite =game.gameItemsLayer.create(col * TileSize, row * TileSize, imageResourceName);
+    
     sprite.col = col;
     sprite.row = row;
     return sprite;
@@ -160,5 +162,7 @@ function getAllItemsCurrentlyInPlay() {
 }
 
 function createFogOfWar() {
-    return game.mapHelper.createEmptyMap(16, 16, TileTypes.FogOfWar);
+    var fogOfWar = game.make.bitmapData(game.width, game.height);
+    fogOfWar.fill(0, 0, 0, 1);
+    return fogOfWar;
 }

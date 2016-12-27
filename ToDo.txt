@@ -27,5 +27,7 @@ NiceToHaves:
 	it is ready to produce a new unit
 - only show stats for unit, when it is selected, to not clutter the map.
 
+Maybe have random stacks of wood or sacks of grain on the map for bonus-pick-ups?
+
 
 
