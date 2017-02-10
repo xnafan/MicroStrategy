@@ -16,12 +16,14 @@ var GameState = {
         game.stage.backgroundColor = '#2d2d2d';
 
         game.cursors = game.input.keyboard.createCursorKeys();
-        game.debugText = game.add.text(10, 0, "Currentplayers",{}, game.overlayLayer);
+        game.debugText = game.add.text(10, 0, "Currentplayers", {}, game.overlayLayer);
+        game.debugText.visible = false;
         game.debugText.fill = '#ffffaa';
         game.debugText.fontSize = 24;
         game.debugText.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
         game.input.keyboard.addKey(Phaser.Keyboard.ENTER).onDown.add(function () { game.getCurrentPlayer().controller.notifyTurnDone(); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.B).onDown.add(function () { game.addNewCityIfPossible(); }, this);
+        game.input.keyboard.addKey(Phaser.Keyboard.D).onDown.add(function () { game.debugText.visible = !game.debugText.visible; }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.TAB).onDown.add(function () { game.getCurrentPlayer().selectNextItem(true); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_5).onDown.add(function () { game.getCurrentPlayer().selectNextItem(true); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(function () { game.tryMove(0, -1); }, this);
@@ -37,7 +39,6 @@ var GameState = {
         game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_9).onDown.add(function () { game.tryMove(1, -1); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_1).onDown.add(function () { game.tryMove(-1, 1); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_3).onDown.add(function () { game.tryMove(1, 1); }, this);
-
 
         game.currentPlayerIndex = 0;
         game.toggleCurrentPlayer = function () {
@@ -55,7 +56,6 @@ var GameState = {
         
         game.add.sprite(0,0,game.gfx.fogOfWar);
         game.getCurrentPlayer().newTurn();
-
 
         game.addNewCityIfPossible = function () {
             var currentPlayer = game.getCurrentPlayer();

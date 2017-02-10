@@ -10,17 +10,36 @@
     }
     player.controller = this;
 
+    this.getEnemyCloseBy = function (positionToSearchAround)
+    {
+        var bestDistance = 1000;
+        var position = undefined;
+        for (var i = game.players[0].units.length - 1; i >= 0; i--) {
+            var unit = game.players[0].units[i];
+            var unitPosition = { x: unit.col, y: unit.row };
+            var distanceToTest = getDistanceBetweenPositions(unitPosition,positionToSearchAround);
+            if (distanceToTest < bestDistance)
+            {
+                bestDistance = distanceToTest;
+                position = unitPosition;
+            }
+        }
+        return position;
+    }
+
     this.getTargetTileForUnit = function (unit)
     {
-        return {x: 0, y:0};
+        var positionOfEnemyCloseBy = this.getEnemyCloseBy({ x: unit.col, y: unit.row });
+        if (positionOfEnemyCloseBy === undefined)
+        { return { x: 0, y: 0 }; }
+
+        return positionOfEnemyCloseBy;
     }
 
     this.performBestMoveForUnit = function (unit) {
-
         var targetTile = this.getTargetTileForUnit(unit);
         var direction = game.mapHelper.getDirection(targetTile, { x: unit.col, y: unit.row });
-        if (game.tryMove(direction.x, direction.y)) { didMove = true; };
-        
+        game.tryMove(direction.x, direction.y);
     }
 
     this.performAMove = function ()

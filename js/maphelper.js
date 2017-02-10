@@ -209,3 +209,8 @@ function getItemInTile(col, row) {
         }
     }
 }
+
+function getDistanceBetweenPositions(firstTile, secondTile)
+{
+    return Math.sqrt(Math.pow(firstTile.x - secondTile.x, 2) + Math.pow(firstTile.y - secondTile.y, 2));
+}
