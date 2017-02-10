@@ -61,6 +61,14 @@ MapHelper.prototype.mapDataToCSV = function () {
     }
     return csvMapString;
 }
+MapHelper.prototype.changeGrassToFarmlandAroundTile = function (map, col, row)
+{
+    var fields = game.mapHelper.get8Neighbors(map, col, row, TileTypes.Grass);
+    for (var i = 0; i < fields.length; i++) {
+        game.map.getTile(fields[i].x, fields[i].y).index = 4;
+    }
+    game.map.layer.dirty = true;
+}
 
 MapHelper.prototype.get8Neighbors = function (map, col, row, mapTileTypeToGet) {
     var neighbors = [];
@@ -153,7 +161,6 @@ function revealMapAroundTile(col, row) {
 
 function updateFogOfWar() {
     clearFogOfWarAroundCurrentPlayersItems();
-
 }
 
 function clearFogOfWarAroundCurrentPlayersItems() {

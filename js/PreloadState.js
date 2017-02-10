@@ -15,8 +15,9 @@ var PreloadState = {
 		//gfx
 		this.load.image('background', 'gfx/background.png' + cacheBuster());
 		this.load.image('gameTiles', 'gfx/tiles.png' + cacheBuster());
+		this.load.image('splash', 'gfx/splash.png' + cacheBuster());
 		this.load.image('soldierImage', 'gfx/unit.png' + cacheBuster());
-		this.load.image('castleImage', 'gfx/castle.png' + cacheBuster());
+		this.load.spritesheet('castleImage', 'gfx/castles.png' + cacheBuster(), 64,64,2);
 		this.load.image('fogofwarmask', 'gfx/fogofwarmask.png' + cacheBuster());
 
 		this.load.spritesheet('selectionImage', "gfx/selection.png" + cacheBuster(), 64, 64, 2);
@@ -34,11 +35,9 @@ var PreloadState = {
 		game.gfx.fogOfWarMixer = game.make.bitmapData(game.width, game.height);
 		game.gfx.fogOfWar = game.make.bitmapData(game.width, game.height);
 		
-		this.game.state.start('GameState');
+		this.game.state.start('SplashState');
 	}
 
 };
 
-function cacheBuster() {
-	return "?cb=" + Math.random();
-}
+function cacheBuster() {return "?cb=" + Math.random();}

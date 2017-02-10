@@ -20,17 +20,28 @@ var GameState = {
         game.debugText.fill = '#ffffaa';
         game.debugText.fontSize = 24;
         game.debugText.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
-        game.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(function () { game.toggleCurrentPlayer(); }, this);
+        game.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(function () { game.getCurrentPlayer().controller.notifyTurnDone(); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.B).onDown.add(function () { addNewCityIfPossible(); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.TAB).onDown.add(function () { game.getCurrentPlayer().selectNextItem(true); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(function () { game.tryMove(0, -1); }, this);
+        game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_8).onDown.add(function () { game.tryMove(0, -1); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.DOWN).onDown.add(function () { game.tryMove(0, 1); }, this);
+        game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_2).onDown.add(function () { game.tryMove(0, 1); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.LEFT).onDown.add(function () { game.tryMove(-1, 0); }, this);
+        game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_4).onDown.add(function () { game.tryMove(-1, 0); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.RIGHT).onDown.add(function () { game.tryMove(1,0); }, this);
+        game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_6).onDown.add(function () { game.tryMove(1, 0); }, this);
+        game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_7).onDown.add(function () { game.tryMove(-1, -1); }, this);
+        game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_9).onDown.add(function () { game.tryMove(1, -1); }, this);
+        game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_1).onDown.add(function () { game.tryMove(-1, 1); }, this);
+        game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_3).onDown.add(function () { game.tryMove(1, 1); }, this);
+
+
         game.currentPlayerIndex = 0;
         game.toggleCurrentPlayer = function () {
             game.currentPlayerIndex = 1 - game.currentPlayerIndex;
             game.getCurrentPlayer().newTurn();
+            game.getCurrentPlayer().controller.startTurn();
         }
         game.getCurrentPlayer = function () { return game.players[game.currentPlayerIndex]; }
         
@@ -40,10 +51,6 @@ var GameState = {
         game.selectorMarker.animations.add('blink', [0, 1]);
         game.selectorMarker.animations.play('blink', 6, true);
         
-		//game.add.sprite(0,0,game.gfx.fogOfWar);
-    //    game.gfx.sort = game.add.sprite(0,0,"blackness");
-    //    game.gfx.sort.width = 1024;
-    //    game.gfx.sort.height = 1024;
         game.add.sprite(0,0,game.gfx.fogOfWar);
         game.getCurrentPlayer().newTurn();
     },
@@ -74,7 +81,6 @@ var GameState = {
         game.mapLayer = game.add.group();
         game.gameItemsLayer = game.add.group();
         game.fogOfWarLayer = game.add.group();
-        //game.fogOfWarLayer.add(game.gfx.fogOfWar);
         game.overlayLayer = game.add.group();
 
 	    game.input.onDown.add(function (pointer, event) {
@@ -90,7 +96,6 @@ var GameState = {
         game.mapLayer.add(game.map.backgroundLayer);
          game.trySelect = function (col, row)
          {
-             //alert("col:" + col + ",row:" + row);
              game.getCurrentPlayer().trySelect(col, row);
          }
 
@@ -99,41 +104,44 @@ var GameState = {
              game.players = [];
              var player1 = new Player("player 1");
              var player2 = new Player("player 2");
-
+             var playerController1 = new HumanInputPlayerController(player1, game.toggleCurrentPlayer);
+             var playerController2 = new AIPlayerController(player2, game.toggleCurrentPlayer);
+             //game.currentController = ;
              controlSurroundingForests(1, 1, 3);
              var city1 = player1.addCity(1, 1);
-             
+             player1.wood = 122;
              controlSurroundingForests(14, 14, 3);
              var city2 = player2.addCity(14, 14);
-             
 
              player1.addUnit(2, 2, 1, 1, 2);
              player2.addUnit(13, 13, 1, 1, 2);
 
              game.players.push(player1);
-             game.players.push(player2);   
+             game.players.push(player2);
+
+             game.signalTurnEnd = function (){}
          };
 
          game.tryMove = function (deltaX, deltaY) {
+             var couldMove = false;
              var piece = game.getCurrentPlayer().getSelectedItem();
              if (piece.type === ItemTypes.UNIT && piece.movesLeft > 0) {
-
                  var newCol = piece.col + deltaX;
                  var newRow = piece.row + deltaY;
                  if (game.mapHelper.isOnMap(newCol, newRow)) {
-
                      piece.col = newCol;
                      piece.row = newRow;
                      piece.x = newCol * TileSize;
                      piece.y = newRow * TileSize;
                      piece.movesLeft--;
-                 
-                }
+                     couldMove = true;
+                 }
              }
-             updateFogOfWar();
+             if (game.getCurrentPlayer() == game.players[0]) { updateFogOfWar(); }
              game.world.bringToTop(game.overlayLayer);
+             return couldMove;
          }
-    }
+	}    
 }
 
 //WHY can't this be added as a method on the GameState like Create, Load, etc.
