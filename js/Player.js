@@ -1,4 +1,5 @@
-﻿var Player = function (name) {
+﻿var Player = function (name, playerIndex) {
+    this.playerIndex = playerIndex;
     this.name = name;
     this.cities = [];
     this.units = [];
@@ -72,6 +73,7 @@
 
     this.addCity = function (col, row) {
         var city = addSpriteToMap(col, row, 'castleImage');
+        city.frame = this.playerIndex;
         game.map.getTile(col, row).index = 0;      
         city.woodPerTurn = game.mapHelper.get8Neighbors(game.map, col, row, TileTypes.Forest).length;
         city.grainPerTurn = 8 - city.woodPerTurn;
@@ -91,6 +93,9 @@
             }
         }
         game.mapHelper.changeGrassToFarmlandAroundTile(game.map, col, row);
+        game.mapHelper.addWoodIconToForestsAroundTile(game.map, col, row);
+        
+
         this.cities.push(city);
         return city;
     };
@@ -140,10 +145,8 @@
         for (var i = 0; i < this.cities.length; i++) {
             this.cities[i].newTurn();
         }
-
         if (game.getCurrentPlayer() == game.players[0]) { updateFogOfWar(); }
-        //game.gfx.fogOfWar.circle(32,32,16, "rgba(0,100,0,1)");
-        // game.gfx.fogOfWar.alphaMask(game.gfx.blackness, game.gfx.fogOfWarMask);
+
     };
 }
 

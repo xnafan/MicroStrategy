@@ -7,8 +7,7 @@ var SplashState = {
 	},
 
 	create: function () {
-		
-	    setTimeout("this.game.state.start('GameState');", 3000);
+	    setTimeout("this.game.state.start('GameState');", 2000);
 	}
 
 };

@@ -61,11 +61,30 @@ MapHelper.prototype.mapDataToCSV = function () {
     }
     return csvMapString;
 }
+
+MapHelper.prototype.getDirection = function (destination, startingPoint)
+{
+
+    var deltaX = destination.x - startingPoint.x;
+    var deltaY = destination.y - startingPoint.y;
+    return {x: Math.sign(deltaX), y: Math.sign(deltaY)};
+}
+
+
 MapHelper.prototype.changeGrassToFarmlandAroundTile = function (map, col, row)
 {
     var fields = game.mapHelper.get8Neighbors(map, col, row, TileTypes.Grass);
     for (var i = 0; i < fields.length; i++) {
         game.map.getTile(fields[i].x, fields[i].y).index = 4;
+    }
+    game.map.layer.dirty = true;
+}
+
+
+MapHelper.prototype.addWoodIconToForestsAroundTile = function (map, col, row) {
+    var fields = game.mapHelper.get8Neighbors(map, col, row, TileTypes.Forest);
+    for (var i = 0; i < fields.length; i++) {
+        game.map.getTile(fields[i].x, fields[i].y).index = 5;
     }
     game.map.layer.dirty = true;
 }

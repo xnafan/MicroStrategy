@@ -3,7 +3,6 @@
     this.acceptsKeyboardInput = false;
     this.notifyTurnDone = doneNotifierFunction;
     this.discoveredEnemyCastles = [];
-   
 
     this.startTurn = function () {
         var that = this;
@@ -13,25 +12,15 @@
 
     this.getTargetTileForUnit = function (unit)
     {
-
+        return {x: 0, y:0};
     }
 
     this.performBestMoveForUnit = function (unit) {
 
-        var targetTile = getTargetTileForUnit(unit);
-
-        var didMove = false;
-
-        while (!didMove) {
-            var roll = Math.floor(Math.random() * 4);
-            switch (roll)
-            {
-                case 0: if (game.tryMove(-1, 0)) { didMove = true; }; break;
-                case 1: if (game.tryMove(1, 0)) { didMove = true; }; break;
-                case 2: if (game.tryMove(0, -1)) { didMove = true; }; break;
-                case 3: if (game.tryMove(0, 1)) { didMove = true; }; break;
-            }
-        }
+        var targetTile = this.getTargetTileForUnit(unit);
+        var direction = game.mapHelper.getDirection(targetTile, { x: unit.col, y: unit.row });
+        if (game.tryMove(direction.x, direction.y)) { didMove = true; };
+        
     }
 
     this.performAMove = function ()

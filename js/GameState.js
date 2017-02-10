@@ -20,10 +20,12 @@ var GameState = {
         game.debugText.fill = '#ffffaa';
         game.debugText.fontSize = 24;
         game.debugText.setShadow(3, 3, 'rgba(0,0,0,0.5)', 5);
-        game.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(function () { game.getCurrentPlayer().controller.notifyTurnDone(); }, this);
-        game.input.keyboard.addKey(Phaser.Keyboard.B).onDown.add(function () { addNewCityIfPossible(); }, this);
+        game.input.keyboard.addKey(Phaser.Keyboard.ENTER).onDown.add(function () { game.getCurrentPlayer().controller.notifyTurnDone(); }, this);
+        game.input.keyboard.addKey(Phaser.Keyboard.B).onDown.add(function () { game.addNewCityIfPossible(); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.TAB).onDown.add(function () { game.getCurrentPlayer().selectNextItem(true); }, this);
+        game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_5).onDown.add(function () { game.getCurrentPlayer().selectNextItem(true); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(function () { game.tryMove(0, -1); }, this);
+        game.input.keyboard.addKey(Phaser.Keyboard.W).onDown.add(function () { game.players[0].wood += 10; }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_8).onDown.add(function () { game.tryMove(0, -1); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.DOWN).onDown.add(function () { game.tryMove(0, 1); }, this);
         game.input.keyboard.addKey(Phaser.Keyboard.NUMPAD_2).onDown.add(function () { game.tryMove(0, 1); }, this);
@@ -49,10 +51,25 @@ var GameState = {
        
         game.selectorMarker = game.add.sprite(200, 200, 'selectionImage');
         game.selectorMarker.animations.add('blink', [0, 1]);
-        game.selectorMarker.animations.play('blink', 6, true);
+        game.selectorMarker.animations.play('blink', 3, true);
         
         game.add.sprite(0,0,game.gfx.fogOfWar);
         game.getCurrentPlayer().newTurn();
+
+
+        game.addNewCityIfPossible = function () {
+            var currentPlayer = game.getCurrentPlayer();
+            var currentItem = currentPlayer.getSelectedItem();
+            if (currentPlayer.wood > CityPriceInWood && currentPlayer.cities.length < 3 && currentItem.type == ItemTypes.UNIT) {
+                if (currentItem != undefined) {
+                    removeUnitFromPlayer(currentPlayer, currentItem);
+                    currentPlayer.selectedItem = currentPlayer.addCity(currentItem.col, currentItem.row);
+                    currentPlayer.wood -= CityPriceInWood;
+                    game.trySelect(currentItem.col, currentItem.row);
+                }
+            }
+        };
+
     },
     	
    
@@ -102,14 +119,13 @@ var GameState = {
          game.createPlayers = function (numberOfPlayers)
          {
              game.players = [];
-             var player1 = new Player("player 1");
-             var player2 = new Player("player 2");
+             var player1 = new Player("player 1", 0);
+             var player2 = new Player("player 2", 1);
              var playerController1 = new HumanInputPlayerController(player1, game.toggleCurrentPlayer);
              var playerController2 = new AIPlayerController(player2, game.toggleCurrentPlayer);
-             //game.currentController = ;
              controlSurroundingForests(1, 1, 3);
              var city1 = player1.addCity(1, 1);
-             player1.wood = 122;
+             //player1.wood = 122;
              controlSurroundingForests(14, 14, 3);
              var city2 = player2.addCity(14, 14);
 
@@ -141,18 +157,5 @@ var GameState = {
              game.world.bringToTop(game.overlayLayer);
              return couldMove;
          }
-	}    
-}
-
-//WHY can't this be added as a method on the GameState like Create, Load, etc.
-function addNewCityIfPossible() {
-    var currentPlayer = game.getCurrentPlayer();
-    var currentItem = currentPlayer.getSelectedItem();
-    if (currentPlayer.wood > CityPriceInWood && currentPlayer.cities.length < 3 && currentItem.type == ItemTypes.UNIT) {
-        if (currentItem != undefined) {
-            removeUnitFromPlayer(currentPlayer, currentItem);
-            currentPlayer.selectedItem = currentPlayer.addCity(currentItem.col, currentItem.row);
-            currentPlayer.wood -= CityPriceInWood;
-        }
-    }
+	}
 }

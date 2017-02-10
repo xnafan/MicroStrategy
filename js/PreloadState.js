@@ -19,7 +19,6 @@ var PreloadState = {
 		this.load.image('soldierImage', 'gfx/unit.png' + cacheBuster());
 		this.load.spritesheet('castleImage', 'gfx/castles.png' + cacheBuster(), 64,64,2);
 		this.load.image('fogofwarmask', 'gfx/fogofwarmask.png' + cacheBuster());
-
 		this.load.spritesheet('selectionImage', "gfx/selection.png" + cacheBuster(), 64, 64, 2);
 
 	},
